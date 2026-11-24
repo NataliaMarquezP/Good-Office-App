@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Good Office API</title>
+<style>
+  body{font-family:"Segoe UI",system-ui,sans-serif;margin:0;background:#f3f7fd;color:#0f1f3a}
+  header{background:linear-gradient(140deg,#0b2a5b,#1f5fd1 70%,#4ea3f0);color:#fff;padding:32px 24px}
+  main{max-width:760px;margin:0 auto;padding:24px}
+  a{color:#1f5fd1}
+  .card{background:#fff;border:1px solid #e1e9f5;border-radius:14px;padding:16px 20px;margin-bottom:14px}
+  code{background:#e4efff;padding:2px 6px;border-radius:6px}
+</style>
+</head>
+<body>
+<header><h1>Good Office API</h1><p>Servidor de la app móvil de comunicación interna y monitoreo del ambiente.</p></header>
+<main>
+  <div class="card"><h3>REST · JSON</h3>
+    <p>Documentación interactiva: <a href="/docs">/docs</a> · Especificación OpenAPI: <a href="/openapi/v1.json">/openapi/v1.json</a></p>
+    <p>Primero <code>POST /api/auth/login</code> con <code>{"correo":"demo@goodoffice.local","clave":"goodoffice123"}</code> y usa el token en <code>Authorization: Bearer ...</code></p>
+  </div>
+  <div class="card"><h3>SOAP · XML · WSDL</h3>
+    <p>WSDL del servicio de sensores: <a href="/soap/sensores.asmx?wsdl">/soap/sensores.asmx?wsdl</a></p>
+  </div>
+  <div class="card"><h3>XML en REST</h3>
+    <p>Los endpoints <code>/api/sensores</code> y <code>/api/alertas</code> responden XML con el encabezado <code>Accept: application/xml</code>.</p>
+  </div>
+</main>
+</body>
+</html>

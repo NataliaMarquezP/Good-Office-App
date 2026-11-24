@@ -1,0 +1,719 @@
+<title>Good Office</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: presentation page (left: guide + rubric mapping; right: phone frame with the app). App inside the phone keeps one light blue look by choice. */
+:root{
+  --bg:#eef3fa; --fg:#14223a; --muted:#5a6b85; --line:#d5dfee; --panel:#ffffff; --accent:#1f5fd1;
+  --display:"Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+  --body:"Inter", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+  /* app palette (single look) */
+  --a-bg:#f3f7fd; --a-surface:#ffffff; --a-ink:#0f1f3a; --a-sub:#5d6f8c; --a-line:#e1e9f5;
+  --a-navy:#0b2a5b; --a-blue:#1f5fd1; --a-sky:#4ea3f0; --a-ice:#e4efff;
+  --ok:#1f9d6b; --ok-bg:#e3f6ee; --warn:#c98a06; --warn-bg:#fdf3dc; --bad:#d2453b; --bad-bg:#fde7e5;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0c1424;--fg:#e4ecf8;--muted:#93a4bf;--line:#22324d;--panel:#121d31;--accent:#7fb0ff;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0c1424;--fg:#e4ecf8;--muted:#93a4bf;--line:#22324d;--panel:#121d31;--accent:#7fb0ff;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);margin:0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px 48px}
+.wrap{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:48px;align-items:start}
+@media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)}.stage{order:-1}}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0}
+.guide h1{font-size:2.2rem;letter-spacing:-.02em}
+.guide h1 span{color:var(--accent)}
+.lede{color:var(--muted);line-height:1.6;max-width:60ch;margin:10px 0 24px}
+.eyebrow{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:8px}
+.screens{display:grid;gap:6px;margin:0;padding:0;list-style:none}
+.screens button{all:unset;cursor:pointer;display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 12px;border-radius:10px;border:1px solid transparent;width:100%;box-sizing:border-box}
+.screens button:hover{background:var(--panel);border-color:var(--line)}
+.screens button[aria-current="true"]{background:var(--panel);border-color:var(--accent)}
+.screens button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.screens .n{font-family:var(--mono);font-size:.75rem;color:var(--muted)}
+.screens .t{font-weight:600}
+.screens .d{display:block;font-size:.8rem;color:var(--muted);font-weight:400;margin-top:2px;line-height:1.4}
+.tag{font-size:.68rem;font-weight:600;padding:3px 8px;border-radius:99px;background:var(--line);color:var(--fg);white-space:nowrap}
+.note{margin-top:20px;font-size:.82rem;color:var(--muted);line-height:1.5}
+.stage{position:sticky;top:max(24px,env(safe-area-inset-top,0px));display:flex;justify-content:center}
+
+/* ---------- phone ---------- */
+.phone{width:375px;max-width:100%;height:780px;border-radius:44px;background:#0a1730;padding:12px;box-shadow:0 30px 60px -20px rgba(11,42,91,.45)}
+.screen{position:relative;height:100%;border-radius:34px;overflow:hidden;background:var(--a-bg);color:var(--a-ink);font-family:var(--body);display:flex;flex-direction:column}
+.status{display:flex;justify-content:space-between;align-items:center;padding:12px 26px 4px;font-size:.78rem;font-weight:600;flex:none}
+.status .dots{display:flex;gap:5px;align-items:center}
+.status .bat{width:22px;height:11px;border:1.5px solid currentColor;border-radius:3px;position:relative}
+.status .bat::after{content:"";position:absolute;inset:1.5px;right:5px;background:currentColor;border-radius:1px}
+.view{flex:1;overflow-y:auto;overflow-x:hidden;padding:8px 18px 18px;scrollbar-width:none}
+.view::-webkit-scrollbar{display:none}
+.tabbar{flex:none;display:grid;grid-template-columns:repeat(5,1fr);background:var(--a-surface);border-top:1px solid var(--a-line);padding:8px 6px 18px}
+.tabbar button{all:unset;cursor:pointer;display:grid;justify-items:center;gap:3px;font-size:.66rem;color:var(--a-sub);font-weight:500}
+.tabbar button svg{width:22px;height:22px}
+.tabbar button.on{color:var(--a-blue);font-weight:600}
+.tabbar button:focus-visible{outline:2px solid var(--a-blue);border-radius:8px}
+.ico{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:6px 0 16px}
+.top h2{font-size:1.35rem;color:var(--a-navy);letter-spacing:-.01em}
+.back{all:unset;cursor:pointer;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--a-surface);border:1px solid var(--a-line);color:var(--a-navy);flex:none}
+.avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:.8rem;color:#fff;flex:none;font-family:var(--display)}
+.card{background:var(--a-surface);border:1px solid var(--a-line);border-radius:16px;padding:14px}
+.stack{display:grid;gap:12px}
+.label{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--a-sub);font-weight:600}
+.sub{color:var(--a-sub);font-size:.8rem}
+.row{display:flex;align-items:center;gap:10px;min-width:0}
+.grow{flex:1;min-width:0}
+.ell{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:.7rem;font-weight:600;padding:3px 9px;border-radius:99px}
+.pill.ok{background:var(--ok-bg);color:var(--ok)} .pill.warn{background:var(--warn-bg);color:var(--warn)} .pill.bad{background:var(--bad-bg);color:var(--bad)} .pill.info{background:var(--a-ice);color:var(--a-blue)}
+.dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+.btn{all:unset;cursor:pointer;text-align:center;background:var(--a-blue);color:#fff;font-weight:600;font-size:.9rem;padding:13px 16px;border-radius:12px;display:block;box-sizing:border-box}
+.btn.ghost{background:var(--a-surface);color:var(--a-navy);border:1px solid var(--a-line)}
+.btn:focus-visible{outline:2px solid var(--a-sky);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+
+/* hero card on home */
+.hero{background:linear-gradient(140deg,var(--a-navy),var(--a-blue) 70%,var(--a-sky));color:#fff;border-radius:20px;padding:16px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-40px;top:-40px;width:150px;height:150px;border-radius:50%;border:24px solid rgba(255,255,255,.08)}
+.hero .label{color:rgba(255,255,255,.75)}
+.env3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.env3 div{background:rgba(255,255,255,.12);border-radius:12px;padding:9px}
+.env3 b{display:block;font-family:var(--display);font-size:1.15rem}
+.env3 small{font-size:.66rem;opacity:.8}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.quick button{all:unset;cursor:pointer;display:grid;justify-items:center;gap:6px;font-size:.68rem;color:var(--a-sub);font-weight:500}
+.quick span{width:48px;height:48px;border-radius:14px;background:var(--a-surface);border:1px solid var(--a-line);display:grid;place-items:center;color:var(--a-blue)}
+.quick svg{width:22px;height:22px}
+
+/* chat */
+.search{display:flex;align-items:center;gap:8px;background:var(--a-surface);border:1px solid var(--a-line);border-radius:12px;padding:10px 12px;color:var(--a-sub);font-size:.85rem;margin-bottom:12px}
+.conv{all:unset;cursor:pointer;display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--a-line);width:100%;box-sizing:border-box}
+.conv .time{font-size:.7rem;color:var(--a-sub)}
+.badge{background:var(--a-blue);color:#fff;font-size:.66rem;font-weight:700;min-width:18px;height:18px;border-radius:9px;display:grid;place-items:center;padding:0 5px;margin-top:4px;margin-left:auto}
+.msgs{display:grid;gap:10px}
+.msg{max-width:80%;padding:10px 12px;border-radius:16px;font-size:.85rem;line-height:1.4}
+.msg.in{background:var(--a-surface);border:1px solid var(--a-line);border-bottom-left-radius:4px}
+.msg.out{background:var(--a-blue);color:#fff;justify-self:end;border-bottom-right-radius:4px}
+.msg small{display:block;font-size:.64rem;opacity:.7;margin-top:4px}
+.file{display:flex;gap:10px;align-items:center;background:var(--a-ice);border-radius:10px;padding:8px;margin-top:6px;color:var(--a-navy)}
+.msg.out .file{background:rgba(255,255,255,.16);color:#fff}
+.ft{width:34px;height:40px;border-radius:6px;display:grid;place-items:center;font-size:.6rem;font-weight:800;color:#fff;flex:none}
+.composer{display:flex;gap:8px;align-items:center;background:var(--a-surface);border-top:1px solid var(--a-line);padding:10px 14px 14px;flex:none}
+.composer .in{flex:1;background:var(--a-bg);border-radius:20px;padding:10px 14px;font-size:.82rem;color:var(--a-sub)}
+.send{width:38px;height:38px;border-radius:50%;background:var(--a-blue);color:#fff;display:grid;place-items:center;flex:none}
+.daysep{justify-self:center;font-size:.68rem;color:var(--a-sub);background:var(--a-ice);padding:3px 10px;border-radius:99px}
+
+/* calendar */
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.week div{padding:8px 0;border-radius:12px;font-size:.7rem;color:var(--a-sub)}
+.week b{display:block;font-family:var(--display);font-size:1rem;color:var(--a-ink);margin-top:2px}
+.week .sel{background:var(--a-blue);color:#fff}.week .sel b{color:#fff}
+.week .has b::after{content:"";display:block;width:4px;height:4px;border-radius:50%;background:var(--a-sky);margin:3px auto 0}
+.slot{display:grid;grid-template-columns:44px minmax(0,1fr);gap:10px}
+.slot .h{font-size:.72rem;color:var(--a-sub);padding-top:4px}
+.ev{border-radius:12px;padding:10px 12px;border-left:4px solid var(--a-blue);background:var(--a-ice)}
+.ev.b{border-color:var(--a-sky);background:#eaf6ff}
+.ev b{font-size:.86rem}
+.people{display:flex}.people span{width:22px;height:22px;border-radius:50%;border:2px solid var(--a-surface);margin-left:-6px;font-size:.55rem;color:#fff;display:grid;place-items:center;font-weight:700}
+.people span:first-child{margin-left:0}
+.field{display:grid;gap:5px}
+.field .box{background:var(--a-surface);border:1px solid var(--a-line);border-radius:12px;padding:11px 12px;font-size:.86rem}
+.toggle{width:40px;height:24px;border-radius:12px;background:var(--a-blue);position:relative;flex:none}
+.toggle::after{content:"";position:absolute;right:3px;top:3px;width:18px;height:18px;border-radius:50%;background:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:.75rem;padding:6px 10px;border-radius:99px;background:var(--a-surface);border:1px solid var(--a-line)}
+.chip.on{background:var(--a-navy);color:#fff;border-color:var(--a-navy)}
+
+/* sensors */
+.seg{display:flex;background:var(--a-surface);border:1px solid var(--a-line);border-radius:12px;padding:3px;gap:2px;margin-bottom:12px}
+.seg span{flex:1;text-align:center;font-size:.74rem;padding:7px 4px;border-radius:9px;color:var(--a-sub);font-weight:500}
+.seg .on{background:var(--a-navy);color:#fff}
+.sensor .big{font-family:var(--display);font-size:1.9rem;font-weight:700;letter-spacing:-.02em}
+.sensor .big small{font-size:.9rem;color:var(--a-sub);font-weight:600;margin-left:2px}
+.bar{height:8px;border-radius:4px;background:var(--a-line);position:relative;margin-top:10px}
+.bar .ideal{position:absolute;top:0;bottom:0;background:var(--ok-bg);border:1px solid #b8e6d2;border-radius:4px}
+.bar .mk{position:absolute;top:-4px;width:4px;height:16px;border-radius:2px;background:var(--a-navy)}
+.scale{display:flex;justify-content:space-between;font-size:.62rem;color:var(--a-sub);margin-top:5px}
+svg.spark{width:100%;height:64px;display:block;margin-top:8px}
+.devrow{font-size:.68rem;color:var(--a-sub);display:flex;gap:6px;align-items:center;margin-top:8px;font-family:var(--mono)}
+
+/* alerts */
+.alert{display:grid;grid-template-columns:40px minmax(0,1fr);gap:12px;border-left:4px solid var(--bad)}
+.alert.w{border-left-color:var(--warn)}.alert.o{border-left-color:var(--ok)}
+.aico{width:40px;height:40px;border-radius:12px;display:grid;place-items:center}
+.alert p{margin:4px 0 8px;font-size:.8rem;line-height:1.45;color:var(--a-sub)}
+.sugg{font-size:.76rem;background:var(--a-ice);color:var(--a-navy);padding:8px 10px;border-radius:10px;line-height:1.4}
+
+/* kpis */
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kpi b{display:block;font-family:var(--display);font-size:1.4rem;margin-top:4px}
+.kpi .delta{font-size:.7rem;font-weight:600}
+.up{color:var(--ok)}.down{color:var(--bad)}
+.bars{display:flex;align-items:flex-end;gap:6px;height:110px;margin-top:10px}
+.bars div{flex:1;display:grid;gap:4px;justify-items:center;font-size:.6rem;color:var(--a-sub);align-self:stretch;align-content:end}
+.bars i{display:block;width:100%;border-radius:6px 6px 2px 2px;background:var(--a-sky)}
+.bars i.hi{background:var(--a-blue)}
+.hb{display:grid;grid-template-columns:76px minmax(0,1fr) 34px;gap:8px;align-items:center;font-size:.74rem;margin-top:8px}
+.hb .tr{height:8px;background:var(--a-line);border-radius:4px;overflow:hidden}.hb .tr i{display:block;height:100%;background:var(--a-blue);border-radius:4px}
+
+/* api */
+.code{background:#0b1b36;color:#cfe0ff;border-radius:14px;padding:12px;font-family:var(--mono);font-size:.6rem;line-height:1.55;overflow-x:auto;white-space:pre}
+.code .k{color:#7fc4ff}.code .s{color:#9be3b8}.code .n{color:#ffcf7f}.code .m{color:#c7a6ff;font-weight:600}.code .c{color:#6f86ad}
+.ep{display:flex;gap:8px;align-items:center;font-family:var(--mono);font-size:.72rem;padding:7px 0;border-bottom:1px solid var(--a-line)}
+.verb{font-weight:700;font-size:.62rem;padding:2px 6px;border-radius:5px;color:#fff;min-width:42px;text-align:center}
+.verb.g{background:var(--ok)}.verb.p{background:var(--a-blue)}.verb.u{background:var(--warn)}.verb.d{background:var(--bad)}
+
+/* login */
+.login{height:100%;display:flex;flex-direction:column;background:linear-gradient(170deg,var(--a-navy) 0%,var(--a-blue) 55%,var(--a-sky) 100%);color:#fff;padding:10px 24px 28px}
+.logo{width:64px;height:64px;border-radius:20px;background:#fff;display:grid;place-items:center;margin:60px 0 18px}
+.login h2{font-size:2rem;letter-spacing:-.02em}
+.login p{color:rgba(255,255,255,.8);line-height:1.5;font-size:.9rem;margin:8px 0 0}
+.login .sheet{margin-top:auto;background:#fff;color:var(--a-ink);border-radius:22px;padding:18px;display:grid;gap:10px}
+.sso{display:flex;align-items:center;justify-content:center;gap:10px}
+.or{display:flex;align-items:center;gap:10px;font-size:.72rem;color:var(--a-sub)}.or::before,.or::after{content:"";flex:1;height:1px;background:var(--a-line)}
+
+/* architecture */
+.arch{max-width:1120px;margin:56px auto 0}
+.arch .board{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px;overflow-x:auto;margin-top:12px}
+.arch svg{display:block;min-width:820px;width:100%;height:auto}
+.arch svg text{font-family:var(--body);fill:var(--fg)}
+/* ---------- desktop: browser + REST client (fixed look by choice) ---------- */
+.desk{max-width:1120px;margin:56px auto 0}
+.desk .lede{margin-bottom:12px}
+.scroller{overflow-x:auto;margin-top:16px;padding-bottom:8px}
+.win{width:1100px;border-radius:12px;overflow:hidden;box-shadow:0 24px 50px -24px rgba(11,42,91,.45);border:1px solid #c9d5e6;font-family:var(--body);margin-bottom:28px}
+.chrome{background:#dfe6f1;padding:8px 12px 0;color:#1d2b44}
+.tabs{display:flex;align-items:flex-end;gap:2px}
+.lights{display:flex;gap:7px;margin:0 14px 10px 2px}.lights i{width:12px;height:12px;border-radius:50%;display:block}
+.btab{background:#fff;border-radius:9px 9px 0 0;padding:8px 14px;font-size:12px;display:flex;gap:8px;align-items:center;min-width:220px}
+.btab.off{background:transparent;color:#5d6f8c}
+.fav{width:16px;height:16px;border-radius:4px;background:#1f5fd1;display:grid;place-items:center;color:#fff;font-size:9px;font-weight:800}
+.urlbar{background:#fff;display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid #dde5f0}
+.navb{display:flex;gap:12px;color:#7c8ba3;font-size:15px}
+.url{flex:1;background:#eef2f8;border-radius:16px;padding:6px 14px;font-size:12.5px;color:#1d2b44;display:flex;gap:8px;align-items:center}
+.url .lock{color:#1f9d6b}
+.url span.h{color:#7c8ba3}
+/* docs page */
+.docs{display:grid;grid-template-columns:230px 1fr;background:#fff;color:#14223a;height:680px}
+.dside{background:#f5f8fd;border-right:1px solid #e1e9f5;padding:18px 14px;font-size:12.5px;overflow:hidden}
+.dside .brand{display:flex;gap:8px;align-items:center;font-family:var(--display);font-weight:700;font-size:15px;color:#0b2a5b;margin-bottom:4px}
+.dside .ver{font-size:11px;color:#5d6f8c;margin-bottom:16px}
+.dside h6{margin:14px 0 6px;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#5d6f8c}
+.dside a{display:flex;gap:8px;align-items:center;padding:5px 8px;border-radius:7px;color:#14223a;text-decoration:none;font-family:var(--mono);font-size:11px}
+.dside a.on{background:#e4efff;color:#0b2a5b;font-weight:600}
+.v{font-family:var(--mono);font-weight:700;font-size:9.5px;padding:2px 5px;border-radius:4px;color:#fff;min-width:38px;text-align:center}
+.v.g{background:#1f9d6b}.v.p{background:#1f5fd1}.v.u{background:#c98a06}.v.d{background:#d2453b}
+.dmain{padding:22px 30px;overflow:hidden;display:grid;grid-template-columns:1fr 380px;gap:26px}
+.dmain h3{font-size:20px;color:#0b2a5b;display:flex;gap:10px;align-items:center}
+.dmain p{font-size:13px;color:#4a5b77;line-height:1.55;margin:8px 0 16px}
+.ptable{width:100%;border-collapse:collapse;font-size:12px}
+.ptable th{text-align:left;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#5d6f8c;border-bottom:1px solid #e1e9f5;padding:6px 8px}
+.ptable td{border-bottom:1px solid #eef2f8;padding:8px;vertical-align:top}
+.ptable code{font-family:var(--mono);font-size:11.5px;color:#0b2a5b}
+.req{font-size:10px;color:#d2453b;font-weight:600}
+.codes{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap}
+.cbadge{font-family:var(--mono);font-size:11px;padding:4px 8px;border-radius:6px;border:1px solid #e1e9f5}
+.cbadge b{margin-right:6px}
+.dark{background:#0b1b36;color:#cfe0ff;border-radius:10px;padding:14px;font-family:var(--mono);font-size:11.5px;line-height:1.6;white-space:pre;overflow:hidden}
+.dark .k{color:#7fc4ff}.dark .s{color:#9be3b8}.dark .n{color:#ffcf7f}.dark .c{color:#6f86ad}.dark .m{color:#c7a6ff;font-weight:700}
+.dlabel{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#5d6f8c;font-weight:600;margin:0 0 6px}
+.trybtn{display:inline-block;background:#1f5fd1;color:#fff;font-size:12px;font-weight:600;padding:7px 14px;border-radius:7px;margin-top:14px}
+/* REST client */
+.client{background:#1a1f29;color:#d7dde8;height:780px;display:grid;grid-template-rows:auto 1fr;font-size:12.5px}
+.ctitle{background:#12161e;display:flex;align-items:center;gap:12px;padding:9px 14px;border-bottom:1px solid #2a3140;font-size:12px;color:#9aa6b8}
+.ctitle b{color:#e8edf5;font-weight:600}
+.cbody{display:grid;grid-template-columns:240px 1fr;min-height:0}
+.cside{background:#151a23;border-right:1px solid #2a3140;padding:12px;overflow:hidden}
+.cside .hd{display:flex;justify-content:space-between;color:#9aa6b8;font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.coll{color:#e8edf5;font-weight:600;padding:6px 4px;display:flex;gap:6px;align-items:center}
+.folder{color:#b9c3d3;padding:5px 4px 5px 14px}
+.it{display:flex;gap:8px;align-items:center;padding:5px 6px 5px 26px;border-radius:6px;font-size:11.5px;color:#b9c3d3}
+.it.on{background:#26324a;color:#fff}
+.it .mm{font-family:var(--mono);font-size:9.5px;font-weight:700;width:40px}
+.mm.g{color:#4fd1a1}.mm.p{color:#f4c35a}.mm.u{color:#6fb4ff}.mm.d{color:#ff7d73}
+.cmain{display:grid;grid-template-rows:auto auto auto 1fr;min-width:0;min-height:0}
+.rtabs{display:flex;background:#151a23;border-bottom:1px solid #2a3140}
+.rtabs span{padding:9px 16px;font-size:11.5px;color:#9aa6b8;border-right:1px solid #2a3140}
+.rtabs .on{background:#1a1f29;color:#fff;border-top:2px solid #4ea3f0}
+.reqline{display:flex;gap:8px;padding:12px 14px}
+.method{background:#232a37;border:1px solid #34405a;border-radius:6px;padding:8px 12px;font-family:var(--mono);font-weight:700}
+.requrl{flex:1;background:#232a37;border:1px solid #34405a;border-radius:6px;padding:8px 12px;font-family:var(--mono);color:#e8edf5}
+.requrl .var{color:#4ea3f0}
+.sendb{background:#1f5fd1;color:#fff;font-weight:600;border-radius:6px;padding:8px 22px}
+.subtabs{display:flex;gap:18px;padding:0 14px;border-bottom:1px solid #2a3140;font-size:12px;color:#9aa6b8}
+.subtabs span{padding:8px 0}
+.subtabs .on{color:#fff;border-bottom:2px solid #4ea3f0}
+.subtabs sup{color:#4fd1a1;margin-left:3px}
+.split{display:grid;grid-template-rows:auto 1fr;min-height:0}
+.reqpanel{padding:10px 14px;border-bottom:1px solid #2a3140}
+.kv{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:11.5px}
+.kv td{border:1px solid #2a3140;padding:6px 8px;color:#d7dde8}
+.kv td:first-child{width:22px;text-align:center;color:#4fd1a1}
+.kv tr.h td{color:#7f8ba0;font-family:var(--body);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em}
+.respbar{display:flex;align-items:center;gap:18px;padding:8px 14px;border-bottom:1px solid #2a3140;font-size:12px;color:#9aa6b8}
+.respbar .st{color:#4fd1a1;font-weight:700}
+.respbar b{color:#e8edf5;font-weight:600}
+.resp{display:grid;grid-template-columns:1fr 280px;min-height:0}
+.json{padding:10px 14px;font-family:var(--mono);font-size:11.5px;line-height:1.6;white-space:pre;overflow:hidden;counter-reset:ln}
+.json .k{color:#7fc4ff}.json .s{color:#9be3b8}.json .n{color:#ffcf7f}
+.ln{display:block}.ln::before{counter-increment:ln;content:counter(ln);display:inline-block;width:26px;color:#4b5568;text-align:right;margin-right:14px}
+.tests{border-left:1px solid #2a3140;padding:10px 14px;font-size:11.5px}
+.tests h6{margin:0 0 8px;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:#9aa6b8}
+.tr2{display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-bottom:1px solid #232a37;line-height:1.4}
+.pass{background:#1e4d3c;color:#4fd1a1;font-weight:700;font-size:9.5px;padding:2px 6px;border-radius:4px;flex:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.view>*{animation:in .25s ease}
+@keyframes in{from{transform:translateY(6px)}to{transform:none}}
+</style>
+
+<div class="wrap">
+  <section class="guide">
+    <div class="eyebrow">Prototipo navegable · EP3</div>
+    <h1>Good <span>Office</span></h1>
+    <p class="lede">App móvil de comunicación interna y monitoreo del ambiente laboral. Toca las pantallas de la lista o la barra inferior del celular para navegar. Los datos son de ejemplo.</p>
+    <ul class="screens" id="list"></ul>
+    <p class="note">Cada pantalla indica el criterio de la rúbrica que respalda. Las capturas se toman directamente de este prototipo.</p>
+  </section>
+  <div class="stage">
+    <div class="phone" id="phone"><div class="screen" id="screen"></div></div>
+  </div>
+</div>
+
+<section class="arch" id="arquitectura">
+    <div class="eyebrow">Diagrama</div>
+    <h2>Arquitectura de Good Office</h2>
+    <div class="board" id="archboard">
+      <svg viewBox="0 0 960 400" role="img" aria-label="Arquitectura: app móvil, API REST, servicios y fuentes de datos">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#4ea3f0"/></marker>
+        </defs>
+        <g font-size="13">
+          <!-- app -->
+          <rect x="14" y="120" width="182" height="160" rx="16" fill="#0b2a5b"/>
+          <text x="105" y="160" text-anchor="middle" font-weight="700" font-size="16" style="fill:#fff">App Good Office</text>
+          <text x="105" y="184" text-anchor="middle" style="fill:#cfe0ff">Android / iOS</text>
+          <text x="105" y="214" text-anchor="middle" style="fill:#cfe0ff">Chat · Documentos</text>
+          <text x="105" y="234" text-anchor="middle" style="fill:#cfe0ff">Reuniones · Ambiente</text>
+          <text x="105" y="254" text-anchor="middle" style="fill:#cfe0ff">Sensor de luz (teléfono)</text>
+          <!-- api gateway -->
+          <rect x="280" y="120" width="190" height="160" rx="16" fill="#1f5fd1"/>
+          <text x="375" y="160" text-anchor="middle" font-weight="700" font-size="16" style="fill:#fff">API REST</text>
+          <text x="375" y="184" text-anchor="middle" style="fill:#e4efff">HTTPS · JSON</text>
+          <text x="375" y="214" text-anchor="middle" style="fill:#e4efff">/api/mensajes</text>
+          <text x="375" y="234" text-anchor="middle" style="fill:#e4efff">/api/reuniones</text>
+          <text x="375" y="254" text-anchor="middle" style="fill:#e4efff">/api/sensores</text>
+          <!-- arrows app-api -->
+          <line x1="192" y1="185" x2="276" y2="185" stroke="#4ea3f0" stroke-width="2.5" marker-end="url(#ar)"/>
+          <line x1="276" y1="215" x2="194" y2="215" stroke="#4ea3f0" stroke-width="2.5" marker-end="url(#ar)"/>
+          <text x="234" y="176" text-anchor="middle" font-size="11" style="fill:var(--muted)">request</text>
+          <text x="234" y="234" text-anchor="middle" font-size="11" style="fill:var(--muted)">response</text>
+          <path d="M105 118 C105 60, 375 60, 375 118" fill="none" stroke="#4ea3f0" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#ar)"/>
+          <text x="240" y="60" text-anchor="middle" font-size="11" style="fill:var(--muted)">WebSocket (chat en tiempo real)</text>
+          <!-- services -->
+          <g>
+            <rect x="560" y="20" width="170" height="70" rx="12" fill="none" stroke="#1f5fd1" stroke-width="1.5"/>
+            <text x="645" y="50" text-anchor="middle" font-weight="700">Mensajería</text>
+            <text x="645" y="70" text-anchor="middle" font-size="11" style="fill:var(--muted)">historial y adjuntos</text>
+            <rect x="560" y="110" width="170" height="70" rx="12" fill="none" stroke="#1f5fd1" stroke-width="1.5"/>
+            <text x="645" y="140" text-anchor="middle" font-weight="700">Reuniones</text>
+            <text x="645" y="160" text-anchor="middle" font-size="11" style="fill:var(--muted)">agenda y salas</text>
+            <rect x="560" y="200" width="170" height="70" rx="12" fill="none" stroke="#1f5fd1" stroke-width="1.5"/>
+            <text x="645" y="230" text-anchor="middle" font-weight="700">Monitoreo</text>
+            <text x="645" y="250" text-anchor="middle" font-size="11" style="fill:var(--muted)">lecturas, umbrales, alertas</text>
+            <rect x="560" y="290" width="170" height="70" rx="12" fill="none" stroke="#1f5fd1" stroke-width="1.5"/>
+            <text x="645" y="320" text-anchor="middle" font-weight="700">Analítica</text>
+            <text x="645" y="340" text-anchor="middle" font-size="11" style="fill:var(--muted)">KPIs de uso y ambiente</text>
+          </g>
+          <line x1="472" y1="160" x2="556" y2="55" stroke="#4ea3f0" stroke-width="2" marker-end="url(#ar)"/>
+          <line x1="472" y1="185" x2="556" y2="145" stroke="#4ea3f0" stroke-width="2" marker-end="url(#ar)"/>
+          <line x1="472" y1="215" x2="556" y2="235" stroke="#4ea3f0" stroke-width="2" marker-end="url(#ar)"/>
+          <line x1="472" y1="245" x2="556" y2="325" stroke="#4ea3f0" stroke-width="2" marker-end="url(#ar)"/>
+          <!-- externals -->
+          <rect x="800" y="70" width="145" height="90" rx="12" fill="#e4efff"/>
+          <text x="872" y="105" text-anchor="middle" font-weight="700" style="fill:#0b2a5b">Correo corporativo</text>
+          <text x="872" y="125" text-anchor="middle" font-size="11" style="fill:#0b2a5b">SMTP / Graph API</text>
+          <text x="872" y="142" text-anchor="middle" font-size="11" style="fill:#0b2a5b">invitaciones, alertas</text>
+          <rect x="800" y="210" width="145" height="90" rx="12" fill="#e4efff"/>
+          <text x="872" y="245" text-anchor="middle" font-weight="700" style="fill:#0b2a5b">Sensores IoT</text>
+          <text x="872" y="265" text-anchor="middle" font-size="11" style="fill:#0b2a5b">DHT22 + BH1750 (ESP32)</text>
+          <text x="872" y="282" text-anchor="middle" font-size="11" style="fill:#0b2a5b">publican por MQTT</text>
+          <line x1="732" y1="145" x2="796" y2="120" stroke="#4ea3f0" stroke-width="2" marker-end="url(#ar)"/>
+          <line x1="796" y1="255" x2="734" y2="240" stroke="#4ea3f0" stroke-width="2" marker-end="url(#ar)"/>
+          <!-- db -->
+          <rect x="280" y="320" width="190" height="56" rx="12" fill="none" stroke="var(--line)" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <text x="375" y="345" text-anchor="middle" font-weight="700">Base de datos</text>
+          <text x="375" y="364" text-anchor="middle" font-size="11" style="fill:var(--muted)">usuarios, mensajes, lecturas</text>
+          <line x1="375" y1="282" x2="375" y2="316" stroke="#4ea3f0" stroke-width="2" marker-end="url(#ar)"/>
+        </g>
+      </svg>
+    </div>
+</section>
+
+<section class="desk" id="servicios-web">
+  <div class="eyebrow">Servicios web · vista de escritorio</div>
+  <h2>API REST de Good Office</h2>
+  <p class="lede">La app consume esta API. Aquí se ve su documentación en el navegador y dos pruebas hechas desde un cliente REST: una consulta de sensores (GET) y la creación de una reunión (POST).</p>
+  <div class="scroller">
+    <div class="win" id="web-docs">
+      <div class="chrome">
+        <div class="tabs"><div class="lights"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div>
+          <div class="btab"><span class="fav">G</span>Good Office API · Documentación</div><div class="btab off">Bandeja de entrada · Correo</div></div>
+      </div>
+      <div class="urlbar"><div class="navb">← → ⟳</div><div class="url"><span class="lock">🔒</span>https://api.goodoffice.app<span class="h">/docs#get-sensores</span></div></div>
+      <div class="docs">
+        <aside class="dside">
+          <div class="brand"><span class="fav" style="width:22px;height:22px;font-size:12px">G</span>Good Office API</div>
+          <div class="ver">v1.0 · REST · JSON · OAuth 2.0</div>
+          <h6>Sensores</h6>
+          <a class="on"><span class="v g">GET</span>/sensores</a>
+          <a><span class="v g">GET</span>/sensores/{id}/historial</a>
+          <h6>Mensajes</h6>
+          <a><span class="v g">GET</span>/mensajes/{canal}</a>
+          <a><span class="v p">POST</span>/mensajes</a>
+          <h6>Reuniones</h6>
+          <a><span class="v g">GET</span>/reuniones</a>
+          <a><span class="v p">POST</span>/reuniones</a>
+          <a><span class="v d">DELETE</span>/reuniones/{id}</a>
+          <h6>Alertas</h6>
+          <a><span class="v g">GET</span>/alertas</a>
+          <a><span class="v u">PUT</span>/alertas/{id}</a>
+        </aside>
+        <div class="dmain">
+          <div>
+            <h3><span class="v g" style="font-size:12px;padding:4px 8px">GET</span><span style="font-family:var(--mono);font-size:17px">/api/v1/sensores</span></h3>
+            <p>Devuelve la última lectura de temperatura, humedad y luminosidad de una sala. Los dispositivos ESP32 publican cada 30 segundos y la API entrega el valor más reciente junto con el estado de confort calculado según los rangos configurados.</p>
+            <div class="dlabel">Parámetros de consulta</div>
+            <table class="ptable"><tr><th>Nombre</th><th>Tipo</th><th>Descripción</th></tr>
+              <tr><td><code>sala</code> <span class="req">requerido</span></td><td>string</td><td>Identificador de la sala, por ejemplo <code>open-space</code></td></tr>
+              <tr><td><code>unidad</code></td><td>string</td><td><code>C</code> o <code>F</code>. Por defecto <code>C</code></td></tr>
+            </table>
+            <div class="dlabel" style="margin-top:18px">Encabezados</div>
+            <table class="ptable"><tr><th>Nombre</th><th>Valor</th></tr>
+              <tr><td><code>Authorization</code> <span class="req">requerido</span></td><td><code>Bearer &lt;token&gt;</code></td></tr>
+              <tr><td><code>Accept</code></td><td><code>application/json</code></td></tr>
+            </table>
+            <div class="dlabel" style="margin-top:18px">Códigos de respuesta</div>
+            <div class="codes">
+              <span class="cbadge"><b style="color:#1f9d6b">200</b>Lectura encontrada</span>
+              <span class="cbadge"><b style="color:#c98a06">401</b>Token inválido</span>
+              <span class="cbadge"><b style="color:#d2453b">404</b>Sala no existe</span>
+              <span class="cbadge"><b style="color:#d2453b">503</b>Sensor sin conexión</span>
+            </div>
+            <span class="trybtn">Probar en el navegador</span>
+          </div>
+          <div>
+            <div class="dlabel">Ejemplo de solicitud</div>
+            <div class="dark" style="margin-bottom:14px"><span class="m">curl</span> -G \
+  <span class="s">https://api.goodoffice.app/api/v1/sensores</span> \
+  -d <span class="s">sala=open-space</span> \
+  -H <span class="s">"Authorization: Bearer eyJhbGciOi…"</span> \
+  -H <span class="s">"Accept: application/json"</span></div>
+            <div class="dlabel">Respuesta 200 · application/json</div>
+            <div class="dark" id="docs-json"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="win" id="client-get"></div>
+    <div class="win" id="client-post"></div>
+  </div>
+</section>
+
+<script>
+const I = {
+  home:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>',
+  chat:'<path d="M4 5h16v11H9l-5 4z"/>',
+  cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  leaf:'<path d="M12 3v10"/><circle cx="12" cy="16" r="4"/><path d="M12 3a2 2 0 0 1 2 2v8.5"/>',
+  chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  doc:'<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/>',
+  bell:'<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/>',
+  mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
+  back:'<path d="M15 5l-7 7 7 7"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  send:'<path d="M4 12l16-8-6 16-3-7z"/>',
+  search:'<circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/>',
+  clip:'<path d="M20 11l-8 8a5 5 0 0 1-7-7l9-9a3 3 0 0 1 4 4l-9 9a1 1 0 0 1-2-2l8-8"/>',
+  code:'<path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  drop:'<path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z"/>',
+  wifi:'<path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19" r="1"/>'
+};
+const ic=(n,s=22)=>`<svg class="ico" width="${s}" height="${s}" viewBox="0 0 24 24">${I[n]}</svg>`;
+const av=(t,c)=>`<div class="avatar" style="background:${c}">${t}</div>`;
+
+function spark(vals,min,max,lo,hi,color){
+  const w=300,h=64,p=4,n=vals.length;
+  const x=i=>p+i*(w-2*p)/(n-1), y=v=>h-p-(v-min)/(max-min)*(h-2*p);
+  const pts=vals.map((v,i)=>`${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+  const last=vals[n-1];
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+    <rect x="0" y="${y(hi)}" width="${w}" height="${y(lo)-y(hi)}" fill="#e3f6ee"/>
+    <polygon points="${p},${h} ${pts} ${w-p},${h}" fill="${color}" opacity=".12"/>
+    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2.2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>
+    <circle cx="${x(n-1)}" cy="${y(last)}" r="3.5" fill="${color}"/></svg>`;
+}
+function rangeBar(v,min,max,lo,hi){
+  const pc=x=>((x-min)/(max-min)*100).toFixed(1)+'%';
+  return `<div class="bar"><div class="ideal" style="left:${pc(lo)};width:calc(${pc(hi)} - ${pc(lo)})"></div><div class="mk" style="left:calc(${pc(v)} - 2px)"></div></div>`;
+}
+
+const tab=(id)=>`<nav class="tabbar">${[['inicio','home','Inicio'],['chats','chat','Chat'],['reuniones','cal','Reuniones'],['ambiente','leaf','Ambiente'],['analisis','chart','Análisis']].map(([h,i,l])=>`<button data-go="${h}" class="${h===id?'on':''}">${ic(i)}${l}</button>`).join('')}</nav>`;
+const hdr=(t,backTo,right='')=>`<div class="top">${backTo?`<button class="back" data-go="${backTo}" aria-label="Volver">${ic('back',18)}</button>`:''}<h2 class="grow">${t}</h2>${right}</div>`;
+
+const S = {
+login:{t:'Inicio de sesión',d:'Acceso con la cuenta de correo corporativo (SSO).',tag:'Correo',tab:null,html:()=>`
+  <div class="login">
+    <div class="logo"><svg width="36" height="36" viewBox="0 0 24 24" class="ico" style="color:#1f5fd1;stroke-width:2.2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M10 21v-4h4v4"/></svg></div>
+    <h2>Good Office</h2>
+    <p>Comunícate con tu equipo, agenda reuniones y revisa el ambiente de tu oficina en un solo lugar.</p>
+    <div class="sheet">
+      <button class="btn sso" data-go="inicio">${ic('mail',18)} Continuar con correo corporativo</button>
+      <div class="or">o</div>
+      <div class="field"><span class="label">Correo</span><div class="box">nombre.apellido@empresa.cl</div></div>
+      <button class="btn ghost" data-go="inicio">Ingresar con contraseña</button>
+      <span class="sub" style="text-align:center;font-size:.7rem">Conexión segura HTTPS · OAuth 2.0</span>
+    </div>
+  </div>`},
+inicio:{t:'Inicio',d:'Resumen: ambiente actual, próxima reunión y mensajes nuevos.',tag:'Todos',tab:'inicio',html:()=>`
+  <div class="top"><div class="grow"><div class="sub">Lunes 23 de noviembre</div><h2>Hola, Usuario</h2></div><button class="back" data-go="alertas" aria-label="Alertas" style="position:relative">${ic('bell',18)}<span style="position:absolute;top:6px;right:7px;width:8px;height:8px;border-radius:50%;background:var(--bad)"></span></button></div>
+  <div class="stack">
+    <div class="hero" data-go="ambiente" style="cursor:pointer">
+      <div class="row"><span class="label grow">Ambiente · Open space</span><span class="pill ok" style="background:rgba(255,255,255,.18);color:#fff"><span class="dot"></span>Confortable</span></div>
+      <div class="env3">
+        <div><small>Temperatura</small><b class="num">22,4 °C</b></div>
+        <div><small>Humedad</small><b class="num">48 %</b></div>
+        <div><small>Luz</small><b class="num">420 lx</b></div>
+      </div>
+    </div>
+    <div class="quick">
+      <button data-go="chat"><span>${ic('chat')}</span>Mensaje</button>
+      <button data-go="agendar"><span>${ic('cal')}</span>Agendar</button>
+      <button data-go="documentos"><span>${ic('doc')}</span>Archivos</button>
+      <button data-go="alertas"><span>${ic('bell')}</span>Alertas</button>
+    </div>
+    <div class="card">
+      <div class="row"><span class="label grow">Próxima reunión</span><span class="pill info">en 25 min</span></div>
+      <div style="margin-top:8px;font-weight:600">Planificación sprint 14</div>
+      <div class="row" style="margin-top:6px"><span class="sub grow">10:30 – 11:15 · Sala Andes</span><div class="people"><span style="background:#1f5fd1">TÚ</span><span style="background:#4ea3f0">MP</span><span style="background:#0b2a5b">JS</span></div></div>
+    </div>
+    <div class="card">
+      <div class="row"><span class="label grow">Mensajes nuevos</span><span class="sub">3</span></div>
+      <button class="conv" data-go="chat" style="border:0;padding-bottom:0">${av('EQ','#1f5fd1')}<div class="grow"><b>Equipo Desarrollo</b><div class="sub ell">Marcela: Subí el informe de avance</div></div><span class="time sub">09:41</span></button>
+    </div>
+    <div class="card row" data-go="alertas" style="cursor:pointer;border-color:#f6c9c4">
+      <div class="aico" style="background:var(--bad-bg);color:var(--bad)">${ic('bell',20)}</div>
+      <div class="grow"><b style="font-size:.86rem">Sala Pacífico sobre 26 °C</b><div class="sub">Hace 12 min · revisar climatización</div></div>
+    </div>
+  </div>`},
+chats:{t:'Mensajes',d:'Conversaciones por equipo y directas, con búsqueda.',tag:'Comunicación',tab:'chats',html:()=>`
+  ${hdr('Mensajes',null,`<button class="back" aria-label="Nuevo">${ic('plus',18)}</button>`)}
+  <div class="search">${ic('search',16)} Buscar personas o equipos</div>
+  <div class="chips" style="margin-bottom:6px"><span class="chip on">Todos</span><span class="chip">Equipos</span><span class="chip">Directos</span><span class="chip">No leídos</span></div>
+  ${[['EQ','#1f5fd1','Equipo Desarrollo','Marcela: Subí el informe de avance','09:41',2],
+     ['MP','#4ea3f0','Marcela Pérez','Perfecto, lo reviso antes de la reunión','09:12',0],
+     ['RH','#0b2a5b','Recursos Humanos','Recordatorio: pausa activa a las 11:00','08:30',1],
+     ['JS','#2f7d9b','Joaquín Soto','¿Tienes el enlace de la API?','Ayer',0],
+     ['GE','#6b7fd6','Gerencia','Comunicado: nuevo horario de verano','Ayer',0],
+     ['SO','#1f9d6b','Soporte TI','Ticket #482 resuelto','Vie',0]]
+    .map(([a,c,n,m,t,u])=>`<button class="conv" data-go="chat">${av(a,c)}<div class="grow"><b style="font-size:.9rem">${n}</b><div class="sub ell">${m}</div></div><div style="text-align:right"><div class="time">${t}</div>${u?`<div class="badge">${u}</div>`:''}</div></button>`).join('')}
+  `},
+chat:{t:'Chat de equipo',d:'Mensajería instantánea con documentos adjuntos.',tag:'Comunicación',tab:'custom',html:()=>`
+  <div style="display:flex;flex-direction:column;height:100%">
+  <div style="padding:6px 18px 10px;border-bottom:1px solid var(--a-line);background:var(--a-surface)" class="row">
+    <button class="back" data-go="chats" aria-label="Volver">${ic('back',18)}</button>${av('EQ','#1f5fd1')}
+    <div class="grow"><b>Equipo Desarrollo</b><div class="sub"><span style="color:var(--ok)">●</span> 6 miembros · 4 en línea</div></div>
+  </div>
+  <div class="view"><div class="msgs">
+    <span class="daysep">Hoy</span>
+    <div class="msg in"><b style="font-size:.72rem;color:var(--a-blue)">Marcela Pérez</b><br>Buenos días. Subí el informe de avance para la reunión de las 10:30.
+      <div class="file"><div class="ft" style="background:#d2453b">PDF</div><div class="grow"><b style="font-size:.78rem">Informe_avance_S14.pdf</b><div style="font-size:.68rem;opacity:.75">1,2 MB</div></div></div><small>09:38</small></div>
+    <div class="msg in"><b style="font-size:.72rem;color:#2f7d9b">Joaquín Soto</b><br>Gracias. ¿Incluye las métricas de la API?<small>09:40</small></div>
+    <div class="msg out">Sí, en la sección 3. También dejé la planilla con los tiempos de respuesta.
+      <div class="file"><div class="ft" style="background:#1f9d6b">XLS</div><div class="grow"><b style="font-size:.78rem">Tiempos_API.xlsx</b><div style="font-size:.68rem;opacity:.75">84 KB</div></div></div><small>09:41 · Leído</small></div>
+    <div class="msg in"><b style="font-size:.72rem;color:var(--a-blue)">Marcela Pérez</b><br>Excelente 👌 Nos vemos en la Sala Andes.<small>09:41</small></div>
+  </div></div>
+  <div class="composer"><span style="color:var(--a-sub)">${ic('clip',20)}</span><div class="in">Escribe un mensaje…</div><div class="send">${ic('send',18)}</div></div>
+  </div>`},
+documentos:{t:'Documentos',d:'Archivos compartidos por equipo.',tag:'Comunicación',tab:'inicio',html:()=>`
+  ${hdr('Documentos','inicio',`<button class="back" aria-label="Subir">${ic('plus',18)}</button>`)}
+  <div class="search">${ic('search',16)} Buscar documentos</div>
+  <div class="chips" style="margin-bottom:12px"><span class="chip on">Recientes</span><span class="chip">Desarrollo</span><span class="chip">RR.HH.</span><span class="chip">Gerencia</span></div>
+  <div class="card stack" style="gap:0;padding:4px 14px">
+  ${[['PDF','#d2453b','Informe_avance_S14.pdf','Marcela P. · hoy 09:38','1,2 MB'],
+     ['XLS','#1f9d6b','Tiempos_API.xlsx','Tú · hoy 09:41','84 KB'],
+     ['DOC','#1f5fd1','Acta_reunion_semanal.docx','Joaquín S. · ayer','56 KB'],
+     ['PPT','#c98a06','Presentacion_Q4.pptx','Gerencia · vie','4,8 MB'],
+     ['PDF','#d2453b','Protocolo_pausas_activas.pdf','RR.HH. · 15 nov','320 KB']]
+   .map(([e,c,n,m,s],i)=>`<div class="row" style="padding:11px 0;${i?'border-top:1px solid var(--a-line)':''}"><div class="ft" style="background:${c}">${e}</div><div class="grow"><b class="ell" style="display:block;font-size:.84rem">${n}</b><div class="sub">${m}</div></div><span class="sub num">${s}</span></div>`).join('')}
+  </div>
+  <div class="card row" style="margin-top:12px"><div class="grow"><span class="label">Almacenamiento del equipo</span><div class="tr" style="height:8px;background:var(--a-line);border-radius:4px;margin-top:8px;overflow:hidden"><i style="display:block;width:38%;height:100%;background:var(--a-blue)"></i></div></div><span class="sub num">3,8 / 10 GB</span></div>
+  `},
+reuniones:{t:'Reuniones',d:'Agenda semanal y salas disponibles.',tag:'Comunicación',tab:'reuniones',html:()=>`
+  ${hdr('Reuniones',null,`<button class="back" data-go="agendar" aria-label="Agendar">${ic('plus',18)}</button>`)}
+  <div class="card" style="padding:10px">
+    <div class="row" style="margin-bottom:6px"><b class="grow">Noviembre 2026</b><span class="sub">Semana 48</span></div>
+    <div class="week">${[['L',23,1,1],['M',24,0,1],['M',25,0,0],['J',26,0,1],['V',27,0,1],['S',28,0,0],['D',29,0,0]].map(([d,n,s,h])=>`<div class="${s?'sel':''} ${h?'has':''}">${d}<b>${n}</b></div>`).join('')}</div>
+  </div>
+  <div class="stack" style="margin-top:14px">
+    <div class="slot"><span class="h">09:00</span><div class="ev b"><b>Daily stand-up</b><div class="sub">09:00 – 09:15 · Remota</div></div></div>
+    <div class="slot"><span class="h">10:30</span><div class="ev"><div class="row"><b class="grow">Planificación sprint 14</b><div class="people"><span style="background:#1f5fd1">TÚ</span><span style="background:#4ea3f0">MP</span><span style="background:#0b2a5b">JS</span></div></div><div class="sub">10:30 – 11:15 · Sala Andes</div><div class="row" style="margin-top:6px"><span class="pill ok"><span class="dot"></span>Sala 22 °C · 450 lx</span></div></div></div>
+    <div class="slot"><span class="h">12:00</span><div class="sub" style="padding:10px 0">Sin reuniones</div></div>
+    <div class="slot"><span class="h">15:00</span><div class="ev b"><b>Revisión con cliente</b><div class="sub">15:00 – 16:00 · Sala Pacífico</div><div class="row" style="margin-top:6px"><span class="pill bad"><span class="dot"></span>Sala a 26,8 °C</span></div></div></div>
+  </div>
+  `},
+agendar:{t:'Agendar reunión',d:'Formulario que envía la invitación al correo corporativo.',tag:'Correo',tab:'reuniones',html:()=>`
+  ${hdr('Nueva reunión','reuniones')}
+  <div class="stack">
+    <div class="field"><span class="label">Título</span><div class="box">Revisión de métricas de ambiente</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="field"><span class="label">Fecha</span><div class="box">Mié 25 nov</div></div>
+      <div class="field"><span class="label">Hora</span><div class="box">11:00 – 11:45</div></div>
+    </div>
+    <div class="field"><span class="label">Sala sugerida</span>
+      <div class="box row"><div class="grow"><b>Sala Andes</b><div class="sub">8 personas · 22 °C · 450 lx</div></div><span class="pill ok">Libre</span></div></div>
+    <div class="field"><span class="label">Participantes</span><div class="chips"><span class="chip on">Marcela Pérez</span><span class="chip on">Joaquín Soto</span><span class="chip on">Equipo Desarrollo</span><span class="chip">+ Agregar</span></div></div>
+    <div class="card row"><span style="color:var(--a-blue)">${ic('mail',22)}</span><div class="grow"><b style="font-size:.85rem">Enviar invitación por correo</b><div class="sub">Se agrega al calendario corporativo de cada invitado</div></div><div class="toggle"></div></div>
+    <div class="card row"><span style="color:var(--a-blue)">${ic('bell',22)}</span><div class="grow"><b style="font-size:.85rem">Recordatorio</b><div class="sub">15 minutos antes, en la app y por correo</div></div><div class="toggle"></div></div>
+    <button class="btn" data-go="reuniones">Agendar y enviar invitaciones</button>
+  </div>`},
+ambiente:{t:'Monitoreo ambiental',d:'Temperatura, humedad y luminosidad con rango ideal e historial.',tag:'Sensores',tab:'ambiente',html:()=>`
+  ${hdr('Ambiente',null,`<span class="pill ok"><span class="dot"></span>En vivo</span>`)}
+  <div class="seg"><span class="on">Open space</span><span>Sala Andes</span><span>Sala Pacífico</span></div>
+  <div class="stack">
+    ${[['Temperatura','°C','22,4',22.4,16,30,20,24,[21.2,21.5,21.9,22.3,22.8,23.1,22.9,22.6,22.4],'#d2453b','sun','DHT22 · ESP32-P3-01','Ideal 20–24 °C',[16,30]],
+       ['Humedad relativa','%','48',48,20,80,40,60,[52,51,50,50,49,47,47,48,48],'#1f5fd1','drop','DHT22 · ESP32-P3-01','Ideal 40–60 %',[20,80]],
+       ['Luminosidad','lx','420',420,0,1000,300,500,[180,260,380,450,520,480,440,430,420],'#c98a06','sun','BH1750 · ESP32-P3-01','Ideal 300–500 lx',[0,1000]]]
+      .map(([n,u,v,val,mn,mx,lo,hi,ser,c,i,dev,rng,sc])=>`
+      <div class="card sensor">
+        <div class="row"><span class="label grow">${n}</span><span class="pill ok"><span class="dot"></span>Normal</span></div>
+        <div class="row" style="margin-top:4px"><div class="big num grow">${v}<small>${u}</small></div><span class="sub">${rng}</span></div>
+        ${rangeBar(val,mn,mx,lo,hi)}
+        <div class="scale num"><span>${sc[0]}</span><span>${sc[1]}</span></div>
+        ${spark(ser,Math.min(...ser,lo)-(hi-lo)*.3,Math.max(...ser,hi)+(hi-lo)*.3,lo,hi,c)}
+        <div class="scale"><span>08:00</span><span>Últimas 2 h</span><span>10:05</span></div>
+        <div class="devrow">${ic('wifi',13)} ${dev} · act. hace 30 s</div>
+      </div>`).join('')}
+    <div class="card row"><span style="color:var(--a-blue)">${ic('sun',22)}</span><div class="grow"><b style="font-size:.85rem">Sensor de luz del teléfono</b><div class="sub">Lectura en tu puesto: <b class="num">380 lx</b></div></div><span class="pill info">Local</span></div>
+  </div>`},
+alertas:{t:'Alertas',d:'Avisos cuando un valor sale del rango, con acción sugerida.',tag:'Análisis',tab:'ambiente',html:()=>`
+  ${hdr('Alertas','ambiente')}
+  <div class="chips" style="margin-bottom:12px"><span class="chip on">Activas (2)</span><span class="chip">Resueltas</span><span class="chip">Configurar umbrales</span></div>
+  <div class="stack">
+    <div class="card alert"><div class="aico" style="background:var(--bad-bg);color:var(--bad)">${ic('sun',20)}</div><div>
+      <div class="row"><b class="grow" style="font-size:.88rem">Temperatura alta</b><span class="sub">10:05</span></div>
+      <p>Sala Pacífico marca <b class="num">26,8 °C</b>, sobre el máximo de 24 °C desde hace 40 min.</p>
+      <div class="sugg">Sugerencia: encender climatización o mover la reunión de las 15:00 a Sala Andes (22 °C).</div>
+      <div class="row" style="margin-top:10px;gap:8px"><button class="btn" style="padding:8px 12px;font-size:.78rem" data-go="agendar">Cambiar sala</button><button class="btn ghost" style="padding:8px 12px;font-size:.78rem">Avisar a mantención</button></div>
+    </div></div>
+    <div class="card alert w"><div class="aico" style="background:var(--warn-bg);color:var(--warn)">${ic('sun',20)}</div><div>
+      <div class="row"><b class="grow" style="font-size:.88rem">Luz insuficiente</b><span class="sub">09:20</span></div>
+      <p>Puesto 3B en Open space registra <b class="num">210 lx</b>. Lo recomendado para trabajo de oficina es 300–500 lx.</p>
+      <div class="sugg">Sugerencia: revisar luminaria del sector B o abrir persianas.</div>
+    </div></div>
+    <div class="card alert o"><div class="aico" style="background:var(--ok-bg);color:var(--ok)">${ic('drop',20)}</div><div>
+      <div class="row"><b class="grow" style="font-size:.88rem">Humedad normalizada</b><span class="sub">Ayer</span></div>
+      <p>Sala Andes volvió a <b class="num">47 %</b> tras 2 h bajo 35 %.</p>
+    </div></div>
+    <div class="card row"><span style="color:var(--a-blue)">${ic('mail',20)}</span><span class="sub grow">Las alertas críticas también se envían por correo al encargado de la sala.</span></div>
+  </div>`},
+analisis:{t:'Análisis y mejora',d:'KPIs de uso de la app, rendimiento de la API y ambiente.',tag:'Análisis',tab:'analisis',html:()=>`
+  ${hdr('Análisis',null,`<span class="pill info">Últimos 7 días</span>`)}
+  <div class="kpis">
+    <div class="card kpi"><span class="label">Usuarios</span><b class="num">142</b><span class="delta up">▲ 12 %</span></div>
+    <div class="card kpi"><span class="label">Mensajes / día</span><b class="num">1.380</b><span class="delta up">▲ 8 %</span></div>
+    <div class="card kpi"><span class="label">Resp. API (p95)</span><b class="num">180 ms</b><span class="delta up">▼ 22 ms</span></div>
+    <div class="card kpi"><span class="label">Horas fuera de confort</span><b class="num">6,5 h</b><span class="delta down">▲ 2 h</span></div>
+  </div>
+  <div class="card" style="margin-top:12px">
+    <div class="row"><span class="label grow">Mensajes por día</span><span class="sub">miles</span></div>
+    <div class="bars">${[['L',1.42],['M',1.51],['M',1.38],['J',1.6],['V',1.22],['S',.18],['D',.09]].map(([d,v],i)=>`<div><i class="${i==3?'hi':''}" style="height:${v/1.6*85}px"></i>${d}</div>`).join('')}</div>
+  </div>
+  <div class="card" style="margin-top:12px">
+    <span class="label">Uso por módulo</span>
+    ${[['Chat',62],['Reuniones',21],['Ambiente',11],['Documentos',6]].map(([n,v])=>`<div class="hb"><span>${n}</span><div class="tr"><i style="width:${v}%"></i></div><span class="num sub">${v} %</span></div>`).join('')}
+  </div>
+  <div class="card" style="margin-top:12px">
+    <span class="label">Mejoras propuestas</span>
+    <div class="stack" style="gap:8px;margin-top:8px;font-size:.8rem;line-height:1.45">
+      <div class="row" style="align-items:flex-start"><span class="pill bad">Alta</span><span class="grow">Sala Pacífico supera 24 °C en 4 de 5 tardes: automatizar aviso a climatización.</span></div>
+      <div class="row" style="align-items:flex-start"><span class="pill warn">Media</span><span class="grow">Documentos se usa poco: integrar vista previa dentro del chat.</span></div>
+      <div class="row" style="align-items:flex-start"><span class="pill info">Futura</span><span class="grow">Sugerir sala según ocupación y confort al agendar.</span></div>
+    </div>
+  </div>`}
+};
+const ORDER=['login','inicio','chats','chat','documentos','reuniones','agendar','ambiente','alertas','analisis'];
+
+const list=document.getElementById('list'), screen=document.getElementById('screen');
+list.innerHTML=ORDER.map((k,i)=>`<li><button data-go="${k}"><span class="n">${String(i+1).padStart(2,'0')}</span><span class="t">${S[k].t}<span class="d">${S[k].d}</span></span><span class="tag">${S[k].tag}</span></button></li>`).join('');
+
+function render(k){
+  if(!S[k]) k='inicio';
+  const s=S[k];
+  const status=`<div class="status" style="${k==='login'?'position:absolute;left:0;right:0;color:#fff;z-index:2':''}"><span class="num">10:05</span><span class="dots">${ic('wifi',15)}<span class="bat"></span></span></div>`;
+  if(k==='login'){screen.innerHTML=status+s.html();}
+  else if(k==='chat'){screen.innerHTML=status+`<div style="flex:1;min-height:0">${s.html()}</div>`;}
+  else{screen.innerHTML=status+`<div class="view">${s.html()}</div>`+tab(s.tab);}
+  list.querySelectorAll('button').forEach(b=>b.setAttribute('aria-current',b.dataset.go===k));
+}
+document.addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(!g)return;e.preventDefault();if(location.hash!=='#'+g.dataset.go)location.hash=g.dataset.go;else render(g.dataset.go);});
+window.addEventListener('hashchange',()=>render(location.hash.slice(1)));
+render(location.hash.slice(1)||'inicio');
+// ---------- desktop views ----------
+function hl(obj){
+  const esc=t=>t.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  return esc(JSON.stringify(obj,null,2).replace(/\[\s+(-?[\d.]+),\s+(-?[\d.]+)\s+\]/g,'[$1, $2]'))
+    .replace(/"([^"]+)":/g,'<span class="k">"$1"</span>:')
+    .replace(/: "([^"]*)"/g,': <span class="s">"$1"</span>')
+    .replace(/: (-?\d+\.?\d*|true|false|null)/g,': <span class="n">$1</span>').replace(/\[(-?[\d.]+), (-?[\d.]+)\]/g,'[<span class="n">$1</span>, <span class="n">$2</span>]');
+}
+const sensoresResp={sala:"open-space",piso:3,dispositivo:"ESP32-P3-01",timestamp:"2026-11-23T10:05:12-03:00",
+  lecturas:{temperatura:{valor:22.4,unidad:"°C",rango_ideal:[20,24]},humedad:{valor:48,unidad:"%",rango_ideal:[40,60]},luminosidad:{valor:420,unidad:"lx",rango_ideal:[300,500]}},
+  estado:"confortable"};
+document.getElementById('docs-json').innerHTML=hl(sensoresResp);
+const reunionBody={titulo:"Revisión de métricas de ambiente",inicio:"2026-11-25T11:00:00-03:00",fin:"2026-11-25T11:45:00-03:00",sala:"sala-andes",participantes:["marcela.perez@empresa.cl","joaquin.soto@empresa.cl"],enviar_invitacion:true};
+const reunionResp={id:"reu_8f21c",titulo:"Revisión de métricas de ambiente",sala:{id:"sala-andes",capacidad:8,temperatura:22.1,luminosidad:450},estado:"agendada",invitaciones:{canal:"correo-corporativo",enviadas:2},creada:"2026-11-23T10:07:41-03:00"};
+function lines(html){return html.split('\n').map(l=>`<span class="ln">${l}</span>`).join('')}
+function client(o){
+  const items=[['g','GET','Lecturas por sala','sensores'],['g','GET','Historial de sensor',''],['g','GET','Mensajes del canal',''],['p','POST','Enviar mensaje',''],['g','GET','Listar reuniones',''],['p','POST','Crear reunión','reunion'],['u','PUT','Marcar alerta resuelta','']];
+  return `<div class="client">
+  <div class="ctitle"><div class="lights" style="margin:0"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div><b>Cliente REST</b><span>Espacio de trabajo: EP3 · Entorno: <b style="color:#4ea3f0">produccion</b> ({{base_url}} = https://api.goodoffice.app)</span></div>
+  <div class="cbody">
+    <div class="cside">
+      <div class="hd"><span>Colecciones</span><span>＋</span></div>
+      <div class="coll">▾ Good Office API v1</div>
+      ${[['Sensores',[0,1]],['Mensajes',[2,3]],['Reuniones',[4,5]],['Alertas',[6]]].map(([f,ix])=>`<div class="folder">▾ ${f}</div>`+ix.map(i=>{const [c,m,n,k]=items[i];return `<div class="it ${k===o.key?'on':''}"><span class="mm ${c}">${m}</span>${n}</div>`}).join('')).join('')}
+      <div class="hd" style="margin-top:18px"><span>Historial</span></div>
+      <div class="it" style="padding-left:6px"><span class="mm p">POST</span>/reuniones · 201</div>
+      <div class="it" style="padding-left:6px"><span class="mm g">GET</span>/sensores · 200</div>
+      <div class="it" style="padding-left:6px"><span class="mm g">GET</span>/sensores · 401</div>
+    </div>
+    <div class="cmain">
+      <div class="rtabs"><span class="${o.key==='sensores'?'on':''}"><span class="mm g">GET</span> Lecturas por sala</span><span class="${o.key==='reunion'?'on':''}"><span class="mm p">POST</span> Crear reunión</span></div>
+      <div class="reqline"><span class="method mm ${o.mc}">${o.method}</span><div class="requrl"><span class="var">{{base_url}}</span>${o.path}</div><span class="sendb">Enviar</span></div>
+      <div class="subtabs">${o.subtabs.map(([t,on,sup])=>`<span class="${on?'on':''}">${t}${sup?`<sup>${sup}</sup>`:''}</span>`).join('')}</div>
+      <div class="split">
+        <div class="reqpanel">${o.reqpanel}</div>
+        <div style="display:grid;grid-template-rows:auto 1fr;min-height:0">
+          <div class="respbar"><span>Respuesta</span><span style="color:#fff;border-bottom:2px solid #4ea3f0;padding-bottom:2px">Body</span><span>Headers (7)</span><span>Tests (${o.tests.length}/${o.tests.length})</span><span style="flex:1"></span>Estado: <span class="st">${o.status}</span> Tiempo: <b>${o.time}</b> Tamaño: <b>${o.size}</b></div>
+          <div class="resp"><div class="json">${lines(hl(o.resp))}</div>
+            <div class="tests"><h6>Resultados de tests</h6>${o.tests.map(t=>`<div class="tr2"><span class="pass">PASÓ</span><span>${t}</span></div>`).join('')}</div></div>
+        </div>
+      </div>
+    </div>
+  </div></div>`;
+}
+const kvTable=(rows)=>`<table class="kv"><tr class="h"><td></td><td>Clave</td><td>Valor</td><td>Descripción</td></tr>${rows.map(r=>`<tr><td>✓</td><td>${r[0]}</td><td>${r[1]}</td><td style="font-family:var(--body);color:#9aa6b8">${r[2]}</td></tr>`).join('')}</table>`;
+document.getElementById('client-get').innerHTML=client({key:'sensores',method:'GET',mc:'g',path:'/api/v1/sensores?sala=open-space',
+  subtabs:[['Params',1,'1'],['Authorization',0,''],['Headers',0,'2'],['Body',0,''],['Tests',0,'3']],
+  reqpanel:kvTable([['sala','open-space','Sala a consultar'],['Authorization','Bearer {{token}}','Token OAuth 2.0'],['Accept','application/json','Formato de respuesta']]),
+  status:'200 OK',time:'182 ms',size:'486 B',resp:sensoresResp,
+  tests:['Código de estado es 200','Respuesta es JSON y trae "lecturas"','Temperatura entre 20 y 24 °C → "confortable"']});
+document.getElementById('client-post').innerHTML=client({key:'reunion',method:'POST',mc:'p',path:'/api/v1/reuniones',
+  subtabs:[['Params',0,''],['Authorization',0,''],['Headers',0,'2'],['Body',1,'JSON'],['Tests',0,'3']],
+  reqpanel:`<div class="json" style="padding:0">${lines(hl(reunionBody))}</div>`,
+  status:'201 Created',time:'246 ms',size:'392 B',resp:reunionResp,
+  tests:['Código de estado es 201','Respuesta trae "id" de la reunión','Se enviaron 2 invitaciones por correo']});
+
+</script>

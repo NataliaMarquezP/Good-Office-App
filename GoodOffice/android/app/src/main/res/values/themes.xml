@@ -1,0 +1,6 @@
+<resources>
+    <style name="Theme.GoodOffice" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">#0B2A5B</item>
+        <item name="android:windowBackground">@color/fondo</item>
+    </style>
+</resources>

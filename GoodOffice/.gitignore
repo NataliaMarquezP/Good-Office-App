@@ -1,0 +1,44 @@
+# ---------- .NET ----------
+bin/
+obj/
+*.user
+*.suo
+.vs/
+TestResults/
+
+# Base de datos SQLite (se crea sola al iniciar)
+*.db
+*.db-shm
+*.db-wal
+
+# Datos generados en ejecución
+server/GoodOffice.Api/correos/
+server/GoodOffice.Api/almacen/
+
+# Secretos (credenciales de correo, etc.)
+appsettings.Local.json
+appsettings.*.Local.json
+secrets.json
+.env
+.env.*
+
+# ---------- Android ----------
+.gradle/
+.kotlin/
+android/build/
+android/app/build/
+android/app/release/
+android/captures/
+local.properties
+.idea/
+*.iml
+*.apk
+*.aab
+*.jks
+*.keystore
+
+# ---------- Editores y sistema ----------
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
